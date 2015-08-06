@@ -934,6 +934,25 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::deleteNode (const char* nodeNameCorba)
+    {
+        const std::string nodeName (nodeNameCorba);
+        if (nodes_.find (nodeName) == nodes_.end ()) {
+            std::cout << "Node name \"" << nodeName << "\" doesn't exist." << std::endl;
+            return false;
+        }
+        else {
+            NodePtr_t n = nodes_[nodeName];
+            std::map<std::string, GroupNodePtr_t>::iterator itg;
+            for (itg = groupNodes_.begin (); itg != groupNodes_.end(); ++itg) {
+              if (itg->second->hasChild (n))
+                itg->second->removeChild(nodes_[nodeName]);
+            }
+            nodes_.erase (nodeName);
+            return true;
+        }
+    }
+
     bool WindowsManager::applyConfiguration (const char* nodeNameCorba,
             const value_type* configurationCorba)
     {
