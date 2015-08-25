@@ -508,7 +508,7 @@ namespace graphics {
       bool GraphicalInterface::writeNodeFile (const WindowID windowId, const char* filename) throw (Error)
       {
 	try {
-      return writeNodeFile ( windowId, filename) ;
+      return windowsManager_->writeNodeFile ( windowId, filename) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
