@@ -436,6 +436,15 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::getStaticTransform (const char* nodeName,  ::gepetto::corbaserver::Transform transform) throw (Error)
+      {
+        try {
+          return windowsManager_->getStaticTransform ( nodeName, transform) ;
+        } catch (const std::exception& exc) {
+          throw Error (exc.what ());
+        }
+      }
+
       bool GraphicalInterface::setVisibility (const char* nodeNameCorba,
 					      const char* visibilityModeCorba) throw (Error)
       {
