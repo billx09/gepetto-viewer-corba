@@ -942,10 +942,14 @@ namespace graphics {
             return false;
         }
         else {
+            /// Check if it is a group
+            if (groupNodes_.find (nodeName) != groupNodes_.end ()) {
+              groupNodes_.erase (nodeName);
+            }
             NodePtr_t n = nodes_[nodeName];
             std::map<std::string, GroupNodePtr_t>::iterator itg;
             for (itg = groupNodes_.begin (); itg != groupNodes_.end(); ++itg) {
-              if (itg->second->hasChild (n))
+              if (itg->second && itg->second->hasChild (n))
                 itg->second->removeChild(nodes_[nodeName]);
             }
             nodes_.erase (nodeName);
