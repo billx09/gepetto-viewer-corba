@@ -909,8 +909,7 @@ namespace graphics {
     }
 
     bool WindowsManager::addURDF (const char* urdfNameCorba,
-            const char* urdfPathCorba,
-            const char* /*urdfPackagePathCorba*/)
+            const char* urdfPathCorba)
     {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
@@ -940,8 +939,15 @@ namespace graphics {
         return false;
     }
 
+    bool WindowsManager::addURDF (const char* urdfNameCorba,
+            const char* urdfPathCorba,
+            const char* /*urdfPackagePathCorba*/)
+    {
+      return addURDF(urdfNameCorba, urdfPathCorba);
+    }
+
     bool WindowsManager::addUrdfCollision (const char* urdfNameCorba,
-            const char* urdfPathCorba, const char* /*urdfPackagePathCorba*/)
+            const char* urdfPathCorba)
     {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
@@ -972,9 +978,14 @@ namespace graphics {
         return false;
     }
 
+    bool WindowsManager::addUrdfCollision (const char* urdfNameCorba,
+            const char* urdfPathCorba, const char* /*urdfPackagePathCorba*/)
+    {
+      return addUrdfCollision (urdfNameCorba, urdfPathCorba);
+    }
+
     void WindowsManager::addUrdfObjects (const char* urdfNameCorba,
             const char* urdfPathCorba,
-            const char* /*urdfPackagePathCorba*/,
             bool visual)
     {
         const std::string urdfName (urdfNameCorba);
@@ -1006,6 +1017,14 @@ namespace graphics {
           registerUrdfNode (urdfName, urdfPath);
           mtx_.unlock();
         }
+    }
+
+    void WindowsManager::addUrdfObjects (const char* urdfNameCorba,
+            const char* urdfPathCorba,
+            const char* /*urdfPackagePathCorba*/,
+            bool visual)
+    {
+      return addUrdfObjects (urdfNameCorba, urdfPathCorba, visual);
     }
 
     bool WindowsManager::addToGroup (const char* nodeNameCorba,

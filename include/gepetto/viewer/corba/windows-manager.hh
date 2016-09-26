@@ -192,16 +192,26 @@ namespace graphics {
 
             virtual bool addNodeToRoadmap(const char* nameRoadmapCorba, const value_type* configuration);
 
+            virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba);
+            /// \deprecated Argument urdfPackagePathCorba is ignored.
             virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba);
 
+            virtual bool addUrdfCollision (const char* urdfNameCorba,
+                    const char* urdfPathCorba) ;
+            /// \deprecated Argument urdfPackagePathCorba is ignored.
             virtual bool addUrdfCollision (const char* urdfNameCorba,
                     const char* urdfPathCorba,
                     const char* urdfPackagePathCorba) ;
 
             virtual void addUrdfObjects (const char* urdfNameCorba,
                     const char* urdfPathCorba,
+                    bool visual) ;
+            /// \deprecated Argument urdfPackagePathCorba is ignored.
+            virtual void addUrdfObjects (const char* urdfNameCorba,
+                    const char* urdfPathCorba,
                     const char* urdfPackagePathCorba,
                     bool visual) ;
+
 
             virtual bool createGroup(const char* groupNameCorba);
             virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba);
