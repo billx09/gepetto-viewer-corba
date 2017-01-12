@@ -89,6 +89,7 @@ namespace gepetto {
                                                                     const float &x, const float &y,
 								    int modKeyMask)
     {
+      qDebug() << "computing intersection at" << x << y;
       BodyTreeWidget* bt = MainWindow::instance()->bodyTree();
       std::list<graphics::NodePtr_t> nodes;
       osgViewer::View* viewer = dynamic_cast<osgViewer::View*>( &aa );
@@ -107,10 +108,12 @@ namespace gepetto {
           iv.setTraversalMask(graphics::IntersectionBit);
 
           osg::Camera* camera = viewer->getCamera();
+          qDebug() << camera->getName().c_str();
           camera->accept( iv );
 
           if( !intersector->containsIntersections() ) {
             bt->emitBodySelected(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
+            qDebug() << "No intersection found";
             return nodes;
           }
 
@@ -121,9 +124,12 @@ namespace gepetto {
           for (int i = (int) intersection.nodePath.size()-1; i >= 0 ; --i) {
             if (intersection.nodePath[i]->getNodeMask() & graphics::NodeBit) continue;
             graphics::NodePtr_t n = wsm_->getNode(intersection.nodePath[i]->getName ());
+            qDebug() << i << intersection.nodePath[i]->className() << intersection.nodePath[i]->getName ().c_str();
             if (n) {
-              if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$")))
+              if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$"))) {
+                qDebug() << "intersection with " << n->getID().c_str() << "filtered";
                 continue;
+              }
               SelectionEvent *event = new SelectionEvent(SelectionEvent::FromOsgWindow,
                   n,
                   mapper_.getQtModKey(modKeyMask));
@@ -132,6 +138,9 @@ namespace gepetto {
               return nodes;
             }
           }
+          qDebug() << "Intersection found but no node associated to it found";
+          qDebug() << "Node path size" << intersection.nodePath.size();
+          qDebug() << "Nb intersections" << intersector->getIntersections().size();
         }
       bt->emitBodySelected(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
       return nodes;
