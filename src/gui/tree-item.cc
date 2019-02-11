@@ -33,7 +33,12 @@ namespace gepetto {
   namespace gui {
     QWidget* boolPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
     {
+      QString toolTip (
+          "Python:\n"
+          "  gui.getBoolProperty(nodeName,\"%1\")\n"
+          "  gui.setBoolProperty(nodeName,\"%1\",boolean)");
       QCheckBox* cb = new QCheckBox;
+      cb->setToolTip (toolTip.arg(prop->name().c_str()));
       bool value;
       /* bool success = */ prop->get(value);
       cb->setChecked(value);
@@ -49,7 +54,13 @@ namespace gepetto {
       const graphics::EnumProperty::Ptr_t enumProp = graphics::dynamic_pointer_cast<graphics::EnumProperty> (prop);
       const graphics::MetaEnum* enumMeta = enumProp->metaEnum();
 
+      QString toolTip (
+          "Python:\n"
+          "  gui.getIntProperty(nodeName,\"%1\")\n"
+          "  gui.setIntProperty(nodeName,\"%1\",int)");
+
       QComboBox* cb = new QComboBox;
+      cb->setToolTip (toolTip.arg(prop->name().c_str()));
       int value;
       /* bool success = */ enumProp->get(value);
       std::size_t indexSelected = 0;
@@ -68,7 +79,12 @@ namespace gepetto {
 
     QWidget* stringPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
     {
+      QString toolTip (
+          "Python:\n"
+          "  gui.getStringProperty(nodeName,\"%1\")\n"
+          "  gui.setStringProperty(nodeName,\"%1\",str)");
       QLineEdit* le = new QLineEdit;
+      le->setToolTip (toolTip.arg(prop->name().c_str()));
       std::string value;
       /* bool success = */ prop->get(value);
       le->setText(QString::fromStdString(value));
@@ -81,7 +97,12 @@ namespace gepetto {
 
     QWidget* floatPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
     {
+      QString toolTip (
+          "Python:\n"
+          "  gui.getFloatProperty(nodeName,\"%1\")\n"
+          "  gui.setFloatProperty(nodeName,\"%1\",float)");
       QDoubleSpinBox* dsb = new QDoubleSpinBox;
+      dsb->setToolTip (toolTip.arg(prop->name().c_str()));
       float value;
       /* bool success = */ prop->get(value);
       dsb->setValue(value);
@@ -95,7 +116,12 @@ namespace gepetto {
     QWidget* intPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop,
         bool isSigned)
     {
+      QString toolTip (
+          "Python:\n"
+          "  gui.getIntProperty(nodeName,\"%1\")\n"
+          "  gui.setIntProperty(nodeName,\"%1\",int)");
       QSpinBox* dsb = new QSpinBox;
+      dsb->setToolTip (toolTip.arg(prop->name().c_str()));
       int value;
       if (isSigned) {
         /* bool success = */ prop->get(value);
@@ -118,12 +144,17 @@ namespace gepetto {
     QWidget* colorPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
     {
       if (!prop->hasWriteAccess()) return NULL;
+      QString toolTip (
+          "Python:\n"
+          "  gui.getColorProperty(nodeName,\"%1\")\n"
+          "  gui.setColorProperty(nodeName,\"%1\",int)");
       osgVector4 value;
       /* bool success = */ prop->get(value);
       QColor color;
       color.setRgbF((qreal)value[0],(qreal)value[1],(qreal)value[2],(qreal)value[3]);
 
       QPushButton* button = new QPushButton("Select color");
+      button->setToolTip (toolTip.arg(prop->name().c_str()));
       // Set icon for current color value
 
       /// Color dialog should be opened in a different place
@@ -190,8 +221,10 @@ namespace gepetto {
           }
         }
         if (field != NULL) {
+          QLabel* label (new QLabel (name + ':'));
+          label->setToolTip (field->toolTip());
           field->setProperty("propertyName", name);
-          l->addRow(name + ':', field);
+          l->addRow(label, field);
         } else {
           qDebug() << "Unhandled property" << name << "of type" << prop->type().c_str() << ".";
         }
