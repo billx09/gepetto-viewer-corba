@@ -50,6 +50,12 @@ namespace gepetto {
 
       std::string captureDirectory, captureFilename, captureExtension;
 
+      /// \group record_parameter Video generation parameters
+      /// \{
+      QStringList avConvInputOptions;
+      QStringList avConvOutputOptions;
+      /// \}
+
       QString installDirectory;
 
       /// Set up default values

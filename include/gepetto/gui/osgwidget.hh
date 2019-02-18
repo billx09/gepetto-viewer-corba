@@ -76,6 +76,7 @@ namespace gepetto {
 
       private slots:
         void readyReadProcessOutput ();
+        void processErrorOccured    ();
 
       private:
         void initToolBar ();

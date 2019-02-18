@@ -106,6 +106,10 @@ namespace gepetto {
       // Setup widgets to record movies.
       process_->setProcessChannelMode(QProcess::MergedChannels);
       connect (process_, SIGNAL (readyReadStandardOutput ()), SLOT (readyReadProcessOutput()));
+      connect (process_, SIGNAL (errorOccured            ()), SLOT (processErrorOccured   ()));
+#if (QT_VERSION >= QT_VERSION_CHECK(5,2,0))
+      process_->setProcessChannelMode (QProcess::ForwardedErrorChannel);
+#endif
       showPOutput_->setModal(false);
       showPOutput_->setLayout(new QHBoxLayout ());
       showPOutput_->layout()->addWidget(pOutput_);
@@ -173,11 +177,9 @@ namespace gepetto {
 
           QStringList args;
           QString input = "/tmp/gepetto-gui/record/img_0_%d.jpeg";
-          args << "-r" << "50"
+          args << main->settings_->avConvInputOptions
             << "-i" << input
-            << "-vf" << "scale=trunc(iw/2)*2:trunc(ih/2)*2"
-            << "-r" << "25"
-            << "-vcodec" << "libx264"
+            << main->settings_->avConvOutputOptions
             << outputFile;
           qDebug () << args;
 
@@ -235,6 +237,27 @@ namespace gepetto {
     void OSGWidget::readyReadProcessOutput()
     {
       pOutput_->append(process_->readAll());
+    }
+
+    void OSGWidget::processErrorOccured ()
+    {
+      MainWindow* main = MainWindow::instance();
+      switch (process_->error()) {
+        case QProcess::FailedToStart:
+          main->logError ("Could not start avconv. Is avconv command installed "
+              "and accessible within your PATH environment variable ?");
+          break;
+        case QProcess::Crashed:
+          main->logError ("avconv crashed some time after starting successfully.");
+          break;
+        default:
+        case QProcess::Timedout:
+        case QProcess::WriteError:
+        case QProcess::ReadError:
+        case QProcess::UnknownError:
+          main->logError ("Avconv failed. Could not generate the movie.");
+          break;
+      }
     }
 
     QIcon iconFromTheme (const QString& name)

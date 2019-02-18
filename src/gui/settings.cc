@@ -55,6 +55,13 @@ namespace gepetto {
       user.mkpath (path);
       user.cd (path);
       captureDirectory = user.absolutePath().toStdString();
+
+      avConvInputOptions
+            << "-r" << "25";
+      avConvOutputOptions
+            << "-vf" << "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+            << "-r" << "25"
+            << "-vcodec" << "libx264";
     }
 
     void Settings::setupPaths () const
@@ -401,6 +408,13 @@ namespace gepetto {
             addOmniORB ("-ORB" + name, env.value(name).toString());
         }
         env.endGroup ();
+
+        env.beginGroup("avconv");
+        avConvInputOptions  = env.value ("input_options" ,
+            avConvInputOptions).toStringList();
+        avConvOutputOptions = env.value ("output_options",
+            avConvOutputOptions).toStringList();
+        env.endGroup ();
         log (QString ("Read configuration file ") + env.fileName());
       }
     }
@@ -480,6 +494,11 @@ namespace gepetto {
       env.beginGroup("omniORB");
       for (int i = 1; i < omniORBargv_.size(); i+=2)
         env.setValue (omniORBargv_[i-1].mid(4), omniORBargv_[i]);
+      env.endGroup ();
+
+      env.beginGroup("avconv");
+      env.setValue ("input_options", avConvInputOptions);
+      env.setValue ("output_options", avConvInputOptions);
       env.endGroup ();
       log (QString ("Wrote configuration file ") + env.fileName());
     }
