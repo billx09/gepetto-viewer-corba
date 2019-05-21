@@ -47,6 +47,8 @@ SET(${PROJECT_NAME}_HEADERS
 # }}}
 
 # {{{ C++ server.
+LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES qtversion)
+
 IF(NOT CLIENT_ONLY)
   # {{{ Dependencies for the server.
   ADD_REQUIRED_DEPENDENCY("openscenegraph >= 3.2")
